@@ -33,20 +33,20 @@
                             <form action="{{ route('sales.confirmationStore') }}" method="POST">
                                 @csrf
                                 <div class="row">
-                                    @foreach ($products as $product)
+                                    @foreach ($items as $item)
                                         <div class="col-md-4 d-flex align-items-stretch">
                                             <div class="card mb-3 w-100 d-flex flex-column">
                                                 <div class="d-flex justify-content-center p-3" style="height: 250px; overflow: hidden;">
-                                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="object-fit: cover; height: 100%; width: 100%; max-height: 180px;">
+                                                    <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->name }}">
                                                 </div>
                                                 <div class="card-body d-flex flex-column flex-grow-1 justify-content-between">
-                                                    <h5 class="card-title text-center">{{ $product->name }}</h5>
-                                                    <p class="card-text text-center">Harga: Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                                                    <p class="card-text text-center">Stok: {{ $product->quantity }}</p>
+                                                    <h5 class="card-title text-center">{{ $item->name }}</h5>
+                                                    <p class="card-text text-center">Harga: Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+                                                    <p class="card-text text-center">Stok: {{ $item->stock }}</p>
                                                     <div class="d-flex justify-content-center align-items-center">
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary decrement" data-id="{{ $product->id }}">-</button>
-                                                        <input type="number" name="quantities[{{ $product->id }}]" id="quantity-{{ $product->id }}" class="form-control text-center mx-2" style="width: 60px;" min="0" value="0">
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary increment" data-id="{{ $product->id }}">+</button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary decrement" data-id="{{ $item->id }}">-</button>
+                                                        <input type="number" name="stock[{{ $item->id }}]" id="stock-{{ $item->id }}" class="form-control mx-2" value="0" min="0" max="{{ $item->stock }}" data-stock="{{ $item->stock }}" required>                      
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary increment" data-id="{{ $item->id }}">+</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -65,29 +65,30 @@
         </div>
     </section>
 </div>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".increment").forEach(button => {
             button.addEventListener("click", function () {
-                let productId = this.getAttribute("data-id");
-                let input = document.getElementById("quantity-" + productId);
-                if (input) {
-                    input.value = parseInt(input.value) + 1;
+                let itemsId = this.getAttribute("data-id");
+                let input = document.getElementById("stock-" + itemsId);
+                let currentVal = parseInt(input.value) || 0;
+                let stock = parseInt(input.getAttribute("data-stock")) || 0;
+                if (currentVal < stock) {
+                    input.value = currentVal + 1;
                 }
             });
         });
-
+    
         document.querySelectorAll(".decrement").forEach(button => {
             button.addEventListener("click", function () {
-                let productId = this.getAttribute("data-id");
-                let input = document.getElementById("quantity-" + productId);
-                if (input && parseInt(input.value) > 0) {
-                    input.value = parseInt(input.value) - 1;
+                let itemsId = this.getAttribute("data-id");
+                let input = document.getElementById("stock-" + itemsId);
+                let currentVal = parseInt(input.value) || 0;
+                if (currentVal > 0) {
+                    input.value = currentVal - 1;
                 }
             });
         });
     });
 </script>
-
 @endsection

@@ -51,8 +51,8 @@ class SalesController
         }
 
         $items = Items::whereIn('id', array_keys($filteredStock))->get();
-        $totalAmount = $items->sum(function ($items) use ($filteredStock) {
-            return $items->price * $filteredStock[$items->id];
+        $totalAmount = $items->sum(function ($item) use ($filteredStock) {
+            return $item->price * $filteredStock[$item->id];
         });
 
         $customers = Customers::all();
@@ -65,7 +65,20 @@ class SalesController
      */
     public function store(Request $request)
     {
-        $itemsData = json_decode($request->input('items_data'), true);
+        $rawItemsData = json_decode($request->input('items_data'), true);
+        $itemsData = [];
+        
+        foreach ($rawItemsData as $id => $item) {
+            if (isset($item['include'])) {
+                $itemsData[] = [
+                    'id' => $item['id'],
+                    'name' => $item['name'],
+                    'price' => $item['price'],
+                    'stock' => $item['stock'],
+                ];
+            }
+        }
+        
         $totalPay = $request->input('total_pay');
         $totalAmount = $request->input('total_amount');
         $invoiceNumber = 'INV-' . strtoupper(Str::random(8));
@@ -86,13 +99,17 @@ class SalesController
             return view('sales.customers', compact('customers', 'items', 'totalAmount', 'totalPay'));
         }
 
+        $discount = 0;
+
         if ($request->use_point == 1) {
-            $totalAmount = $totalAmount - $request->total_point;
-            Customers::where('id', $customersId)->decrement('points', $request->total_point);
+            $discount = $request->total_point;
+            $totalAmount -= $discount;
+            Customers::where('id', $customersId)->decrement('points', $discount);
         } else {
             $addPoint = $totalAmount / 750;
             Customers::where('id', $customersId)->increment('points', $addPoint);
         }
+        
 
         Sales::create([
             'id' => Str::uuid(),
@@ -126,7 +143,7 @@ class SalesController
      */
     public function show(Sales $sales)
     {
-        $sales->items_data = json_decode($sales->items_data, true);
+        $itemsData = $sales->items_data;
         return view('sales.show', compact('sales'));
     }
 
@@ -137,8 +154,8 @@ class SalesController
     {
         $sales = Sales::where('id', $id)->firstOrFail();
     
-        $itemsData = json_decode($sales->items_data, true);
-    
+        $itemsData = is_string($sales->items_data) ? json_decode($sales->items_data, true) : $sales->items_data;
+
         $totalItemsPrice = array_reduce($itemsData, function ($carry, $item) {
             return $carry + ($item['price'] * $item['stock']);
         }, 0);

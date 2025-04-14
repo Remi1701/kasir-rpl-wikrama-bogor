@@ -18,21 +18,21 @@ class SalesSeeder extends Seeder
                 'id' => Str::uuid(),
                 'invoice_number' => 'INV-' . str_pad($i, 5, '0', STR_PAD_LEFT),
                 'user_id' => $userId,
-                'member_id' => $customerId,
+                'customers_id' => $customerId,
                 'customer_name' => 'Customer ' . $i,
-                'product_data' => json_encode([
+                'items_data' => json_encode([
                     [
-                        'product_id' => (string) Str::uuid(),
-                        'name' => 'Product A',
+                        'item_id' => (string) Str::uuid(),
+                        'name' => 'Item A',
                         'price' => 50000,
-                        'quantity' => 2,
+                        'stock' => 2,
                         'subtotal' => 100000
                     ],
                     [
-                        'product_id' => (string) Str::uuid(),
-                        'name' => 'Product B',
+                        'item_id' => (string) Str::uuid(),
+                        'name' => 'Item B',
                         'price' => 30000,
-                        'quantity' => 1,
+                        'stock' => 1,
                         'subtotal' => 30000
                     ]
                 ]),

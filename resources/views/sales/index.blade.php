@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
                         <div class="row mb-3">
                             <div class="col-md-12 d-flex justify-content-between align-items-center">
                                 <form action="{{ route('sales.index') }}" method="GET" class="d-flex"
-                                style="max-width: 100%%;">
+                                style="max-width: 100%;">
                                 <div class="input-group">
                                     <input type="text" name="search" class="form-control rounded"
                                     placeholder="Search">
@@ -57,7 +57,7 @@ use Illuminate\Support\Facades\DB;
                                 @foreach ($sales as $index => $items)
                                 <td>{{ $sales->firstItem() + $index }}</td>
                                 <td>{{ $items->customer_name }}</td>
-                                <td>{{ $items->created_at }}</td>
+                                <td>{{ $items->created_at->format('d-m-Y H:i') }}</td>
                                 <td>{{ 'Rp ' . number_format($items->total_amount, 0, ',', '.') }}</td>
                                 <td>{{ DB::table('users')->where('id', $items->user_id)->value('name') }}</td>
                                 <td class="text-center">

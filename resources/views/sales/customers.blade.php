@@ -36,32 +36,32 @@
                                     <div class="col-md-6">
                                         <h5>Produk yang Dibeli</h5>
                                         <ul class="list-group">
-                                            @foreach ($products as $key => $product)
-                                                <li class="list-group-item">
-                                                    <strong>{{ $key + 1 . '. ' . $product['name']}}</strong>
-                                                    <br>Harga: Rp {{ number_format($product['price'], 0, ',', '.') }}
-                                                    <br>Jumlah: {{ $product['quantity'] }}
-                                                    <br>Subtotal: Rp {{ number_format($product['price'] * $product['quantity'], 0, ',', '.') }}
-                                                </li>
-                                                <hr>
-                                            @endforeach
+                                            @foreach ($items as $key => $item)
+                                            <li class="list-group-item">
+                                                <strong>{{ $key + 1 . '. ' . $item['name'] }}</strong>
+                                                <br>Harga: Rp {{ number_format($item['price'], 0, ',', '.') }}
+                                                <br>Jumlah: {{ $item['stock'] }}
+                                                <br>Subtotal: Rp {{ number_format($item['price'] * $item['stock'], 0, ',', '.') }}
+                                            </li>
+                                            <hr>
+                                        @endforeach                                        
                                         </ul>
                                         <h5 class="mb-3">Total: Rp {{ number_format($totalAmount, 0, ',', '.') }}</h5>
                                         <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
                                         <input type="hidden" name="total_pay" value="{{ $totalPay }}">
-                                        <input type="hidden" name="member_id" value="{{ $member['id'] }}">
-                                        <input type="hidden" name="product_data" value="{{ json_encode($products) }}">
+                                        <input type="hidden" name="customers_id" value="{{ $customers['id'] }}">
+                                        <input type="hidden" name="items_data" value="{{ json_encode($items) }}">
                                     </div>
 
                                     <div class="col-md-6">
-                                        <h5>Informasi Member</h5>
+                                        <h5>Informasi Customers</h5>
                                         <div class="form-group mb-3">
-                                            <label for="is_member">Nama Member</label>
-                                            <input type="text" class="form-control" name="member_name" value="{{ $member['name'] }}" readonly>
+                                            <label for="is_customers">Nama Customers</label>
+                                            <input type="text" class="form-control" name="customers_name" value="{{ $customers['name'] }}" readonly>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="total_pay">Jumlah Poin</label>
-                                            <input type="text" class="form-control" id="total_pay" name="total_point" value="{{ $member['points'] }}" readonly>
+                                            <input type="text" class="form-control" id="total_pay" name="total_point" value="{{ $customers['points'] }}" readonly>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="use_point" class="d-flex align-items-center">
@@ -89,18 +89,18 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#member_phone').select2({
-            placeholder: "Pilih Member",
+        $('#customers_phone').select2({
+            placeholder: "Pilih Customers",
             width: '100%',
             allowClear: true
         });
 
-        $('#is_member').on('change', function () {
+        $('#is_customers').on('change', function () {
             if ($(this).val() === "yes") {
-                $('#member_selection').fadeIn();
+                $('#customers_selection').fadeIn();
             } else {
-                $('#member_selection').fadeOut();
-                $('#member_phone').val(null).trigger('change');
+                $('#customers_selection').fadeOut();
+                $('#customers_phone').val(null).trigger('change');
             }
         });
 

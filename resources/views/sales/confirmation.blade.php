@@ -36,48 +36,48 @@
                                     <div class="col-md-6">
                                         <h5>Produk yang Dibeli</h5>
                                         <ul class="list-group">
-                                            @foreach ($products as $key => $product)
-                                            dd)
-                                                <li class="list-group-item">
-                                                    <strong>{{ $key + 1 . '. ' . $product->name}}</strong>
-                                                    <br>Harga: Rp {{ number_format($product->price, 0, ',', '.') }}
-                                                    <br>Jumlah: {{ $filteredQuantities[$product->id] }}
-                                                    <br>Subtotal: Rp {{ number_format($product->price * $filteredQuantities[$product->id], 0, ',', '.') }}
-                                                </li>
-                                                <hr>
-                                            @endforeach
+                                        @foreach ($items as $key => $item)
+                                            <li class="list-group-item">
+                                                <strong>{{ $key + 1 . '. ' . $item['name']}}</strong>
+                                                <br>Harga: Rp {{ number_format($item['price'], 0, ',', '.') }}
+                                                <br>Jumlah: {{ $item['quantity'] }}
+                                                <br>Subtotal: Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                                            </li>
+                                            <hr>
+                                        @endforeach
+                                                                             
                                         </ul>
                                         <h5 class="mb-3">Total: Rp {{ number_format($totalAmount, 0, ',', '.') }}</h5>
                                         <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
-                                        <input type="hidden" name="product_data" value="{{ json_encode($products->map(function ($product) use ($filteredQuantities) {
+                                        <input type="hidden" name="items_data" value="{{ json_encode($items->map(function ($item) use ($filteredStock) {
                                             return [
-                                                'id' => $product->id,
-                                                'name' => $product->name,
-                                                'price' => $product->price,
-                                                'quantity' => $filteredQuantities[$product->id] ?? 0,
-                                                'subtotal' => $product->price * ($filteredQuantities[$product->id] ?? 0),
+                                                'id' => $item->id,
+                                                'name' => $item->name,
+                                                'price' => $item->price,
+                                                'quantity' => $filteredStock[$item->id] ?? 0,
+                                                'subtotal' => $item->price * ($filteredStock[$item->id] ?? 0),
                                             ];
-                                        })) }}">
+                                        })) }}">                                        
                                     </div>
 
                                     <div class="col-md-6">
-                                        <h5>Informasi Member</h5>
+                                        <h5>Informasi Customers</h5>
                                         <div class="form-group mb-3">
-                                            <label for="is_member">Member atau Bukan</label>
-                                            <select class="form-control" id="is_member" name="is_member" required>
+                                            <label for="is_customers">Customers atau Bukan</label>
+                                            <select class="form-control" id="is_customers" name="is_customers" required>
                                                 <option value="">Pilih</option>
-                                                <option value="yes">Member</option>
-                                                <option value="no">Bukan Member</option>
+                                                <option value="yes">Customers</option>
+                                                <option value="no">Bukan Customers</option>
                                             </select>
                                         </div>
 
-                                        <div class="form-group mb-3" id="member_selection" style="display: none;">
-                                            <label for="member_phone">Pilih Member (Berdasarkan Nomor Telepon)</label>
+                                        <div class="form-group mb-3" id="customers_selection" style="display: none;">
+                                            <label for="customers_phone">Pilih Customers (Berdasarkan Nomor Telepon)</label>
                                             <br>
-                                            <select class="form-control select2" id="member_phone" name="member_id">
-                                                <option value="">Pilih Member</option>
-                                                @foreach ($members as $member)
-                                                    <option value="{{ $member->id }}">{{ $member->phone_number }} - {{ $member->name }}</option>
+                                            <select class="form-control select2" id="customers_phone" name="customers_id">
+                                                <option value="">Pilih Customers</option>
+                                                @foreach ($customers as $customers)
+                                                    <option value="{{ $customers->id }}">{{ $customers->phone_number }} - {{ $customers->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -106,18 +106,18 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#member_phone').select2({
-            placeholder: "Pilih Member",
+        $('#customers_phone').select2({
+            placeholder: "Pilih Customers",
             width: '100%',
             allowClear: true
         });
 
-        $('#is_member').on('change', function () {
+        $('#is_customers').on('change', function () {
             if ($(this).val() === "yes") {
-                $('#member_selection').fadeIn();
+                $('#customers_selection').fadeIn();
             } else {
-                $('#member_selection').fadeOut();
-                $('#member_phone').val(null).trigger('change');
+                $('#customers_selection').fadeOut();
+                $('#customers_phone').val(null).trigger('change');
             }
         });
 

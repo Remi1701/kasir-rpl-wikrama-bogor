@@ -15,9 +15,9 @@ return new class extends Migration
                 $table->uuid('id')->primary();
                 $table->string('invoice_number')->unique();
                 $table->uuid('user_id');
-                $table->uuid('member_id')->nullable();
+                $table->uuid('customers_id')->nullable();
                 $table->string('customer_name')->nullable();
-                $table->jsonb('product_data');
+                $table->jsonb('items_data');
                 $table->decimal('total_amount', 12, 2);
                 $table->decimal('payment_amount', 12, 2);
                 $table->decimal('change_amount', 12, 2);

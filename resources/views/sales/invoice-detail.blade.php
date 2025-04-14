@@ -17,8 +17,8 @@
                                 <div class="col-md-6">
                                     <h5>Nomor Invoice: <strong>{{ $invoiceNumber }}</strong></h5>
                                     <h5>Informasi Pelanggan</h5>
-                                    <p><strong>Nama:</strong> {{ $customerName }}</p>
-                                    <p><strong>Status:</strong> {{ $customerId ? 'Customer' : 'Non-Customer' }}</p>
+                                    <p><strong>Nama:</strong> {{ $customersName }}</p>
+                                    <p><strong>Status:</strong> {{ $customersId ? 'Customer' : 'Non-Customer' }}</p>
                                 </div>
                                 <div class="col-md-6 text-md-end">
                                     <h5>Tanggal Transaksi</h5>
@@ -38,13 +38,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($productData as $key => $product)
+                                        @foreach ($itemsData as $key => $item)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
-                                            <td>{{ $product['name'] }}</td>
-                                            <td>Rp {{ number_format($product['price'], 0, ',', '.') }}</td>
-                                            <td>{{ $product['quantity'] }}</td>
-                                            <td>Rp {{ number_format($product['price'] * $product['quantity'], 0, ',', '.') }}</td>
+                                            <td>{{ $item['name'] }}</td>
+                                            <td>Rp {{ number_format($item['price'], 0, ',', '.') }}</td>
+                                            <td>{{ $item['stock'] }}</td>
+                                            <td>Rp {{ number_format($item['price'] * $item['stock'], 0, ',', '.') }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

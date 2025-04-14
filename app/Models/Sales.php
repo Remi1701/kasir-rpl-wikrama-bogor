@@ -11,13 +11,17 @@ class Sales extends Model
 
     protected $keyType = 'string';
 
+    protected $casts = [
+        'items_data' => 'array',
+    ];
+
     protected $fillable = [
         'id',
         'invoice_number',
         'user_id',
-        'member_id',
+        'customers_id',
         'customer_name',
-        'product_data',
+        'items_data',
         'total_amount',
         'payment_amount',
         'change_amount',
