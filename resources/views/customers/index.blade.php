@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Members')
+@section('title', 'Customers')
 
 @push('style')
 <!-- Add any custom styles if needed -->
@@ -12,23 +12,23 @@
         <div class="margin-content">
             <div class="container-sm">
                 <div class="section-header">
-                    <h1>Members</h1>
+                    <h1>Customers</h1>
                 </div>
 
                 <div class="section-body">
                     <div class="table-responsive">
                         <div class="row mb-3">
                             <div class="col-md-12 d-flex justify-content-between align-items-center">
-                                <form action="{{ route('members.index') }}" method="GET" class="d-flex" style="max-width: 100%;">
+                                <form action="{{ route('customers.index') }}" method="GET" class="d-flex" style="max-width: 100%;">
                                     <div class="input-group">
-                                        <input type="text" name="search" class="form-control rounded" placeholder="Search Member">
+                                        <input type="text" name="search" class="form-control rounded" placeholder="Search Customer">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary rounded ml-2" type="submit">Search</button>
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('members.create') }}" class="btn btn-success ml-2 p-2">
-                                    Add Member
+                                <a href="{{ route('customers.create') }}" class="btn btn-success ml-2 p-2">
+                                    Add Customer
                                 </a>
                             </div>
                         </div>
@@ -37,27 +37,25 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Member Code</th>
                                     <th>Name</th>
                                     <th>Points</th>
                                     <th>Phone Number</th>
-                                    @if(Auth::user()->role == 'superadmin')
+                                    @if(Auth::user()->role == 'admin')
                                     <th>Action</th>
                                     @endif
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($members as $index => $member)
+                                @forelse ($customers as $index => $customer)
                                 <tr>
-                                    <td>{{ $members->firstItem() + $index }}</td>
-                                    <td>{{ $member->member_code }}</td>
-                                    <td>{{ $member->name }}</td>
-                                    <td>{{ $member->points }}</td>
-                                    <td>{{ $member->phone_number ?? '-' }}</td>
-                                    @if(Auth::user()->role == 'superadmin')
+                                    <td>{{ $customers->firstItem() + $index }}</td>
+                                    <td>{{ $customer->name }}</td>
+                                    <td>{{ $customer->points }}</td>
+                                    <td>{{ $customer->no_hp ?? '-' }}</td>
+                                    @if(Auth::user()->role == 'admin')
                                     <td class="text-center">
-                                        <a href="{{ route('members.edit', $member->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                        <form action="{{ route('members.destroy', $member->id) }}" method="POST" class="delete-form d-inline">
+                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="delete-form d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -67,14 +65,14 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No members found.</td>
+                                    <td colspan="6" class="text-center">No customers found.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
 
                         <div class="d-flex justify-content-center mt-3">
-                            {{ $members->links() }}
+                            {{ $customers->links() }}
                         </div>     
                     </div>
                 </div>
@@ -91,7 +89,7 @@
             e.preventDefault();
             Swal.fire({
                 title: 'Are you sure?',
-                text: "Member will be permanently deleted!",
+                text: "Customer will be permanently deleted!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',

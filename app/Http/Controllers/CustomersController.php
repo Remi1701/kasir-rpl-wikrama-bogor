@@ -10,16 +10,17 @@ class CustomersController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         if ($request->has('search') && $request->search !== null) {
             $search = strtolower($request->search);
             $customers = Customers::whereRaw('LOWER(name) LIKE ?', ['%'.$search.'%'])
-                ->orderByRaw('LOWER(name) ASC')
                 ->paginate(10)
                 ->appends($request->only('search'));
+        } else {
+            $customers = Customers::paginate(10);
         }
-        $customers = Customers::latest()->paginate(10);
+
         return view('customers.index', compact('customers'));
     }
 
@@ -39,10 +40,14 @@ class CustomersController
         
         $request->validate([
             'name' => 'required|string|max:255',
-            'no_hp' => 'nullable|email|max:20',
+            'no_hp' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'points' => 'nullable|integer|min:0',
         ]);
+
+        if(Customers::where('no_hp', $request->no_hp)->exists()) {
+            return redirect()->route('customers.index')->with('error', 'Customer with this Phone Number already exists!');
+        }
 
         Customers::create([
             'name' => $request->name,
@@ -79,6 +84,10 @@ class CustomersController
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
+
+        if(Customers::where('no_hp', $request->no_hp)->exists()) {
+            return redirect()->route('customers.index')->with('error', 'Customer with this Phone Number already exists!');
+        }
 
         $customer->update($request->all());
 

@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\DB;
 ?>
 @extends('layouts.app')
 
-@section('title', 'Penjualan')
+@section('title', 'Sales')
 
 @push('style')
 @endpush
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
         <div class="margin-content">
             <div class="container-sm">
                 <div class="section-header">
-                    <h1>Penjualan</h1>
+                    <h1>Sales</h1>
                 </div>
                 <div class="section-body">
                     <div class="table-responsive">
@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\DB;
                             </form>
                             @if(Auth::user()->role == 'user')
                             <a href="{{ route('sales.create') }}" class="btn btn-success ml-2 p-2">
-                                Tambah Penjualan
+                                Tambah Sales
                             </a>
                             @else 
                             <a href="{{ route('sales.export') }}" class="btn btn-success ml-2 p-2">
@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\DB;
                             <tr>
                                 <th>No</th>
                                 <th>Nama Pelanggan</th>
-                                <th>Tanggal Penjualan</th>
+                                <th>Tanggal Sales</th>
                                 <th>Total Harga</th>
                                 <th>Dibuat Oleh</th>
                                 <th>Action</th>
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let totalProductPrice = 0;
 
             products.forEach((product, index) => {
-                const subtotal = product.price * product.quantity;
+                const subtotal = product.price * product.stock;
                 totalProductPrice += subtotal;
 
                 transactionProducts.innerHTML += `
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${index + 1}</td>
                         <td>${product.name}</td>
                         <td>Rp ${parseInt(product.price || 0).toLocaleString('id-ID')}</td>
-                        <td>${product.quantity}</td>
+                        <td>${product.stock}</td>
                         <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
                     </tr>`;
             });

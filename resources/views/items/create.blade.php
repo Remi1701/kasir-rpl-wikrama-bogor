@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Product')
+@section('title', 'Create Item')
 
 @push('style')
 @endpush
@@ -11,7 +11,7 @@
         <div class="margin-content">
             <div class="container-sm">
                 <div class="section-header">
-                    <h1>Create Product</h1>
+                    <h1>Create Item</h1>
                 </div>
 
                 @if (session('error'))
@@ -33,7 +33,7 @@
                 <div class="section-body">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group mb-3">
                                     <label for="name">Nama Produk</label>
@@ -47,8 +47,8 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="quantity">Stok</label>
-                                    <input type="number" class="form-control" name="quantity" id="quantity" placeholder="Jumlah Stok" value="{{ old('quantity') }}" required>
+                                    <label for="stock">Stok</label>
+                                    <input type="number" class="form-control" name="stock" id="stock" placeholder="Jumlah Stok" value="{{ old('stock') }}" required>
                                 </div>
 
                                 <div class="form-group mb-4">
@@ -67,11 +67,11 @@
                                 </div>
                         
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('products.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('items.index') }}" class="btn btn-secondary">
                                         Back
                                     </a>
                                     <button type="submit" class="btn btn-success">
-                                        Save Product
+                                        Save Item
                                     </button>
                                 </div>
                             </form>

@@ -24,12 +24,12 @@ class UserController extends Controller
             $users = User::paginate(10);
         }
 
-        return view('admin.user.index', compact('users'));
+        return view('user.index', compact('users'));
     }
 
     public function create()
     {
-        return view('admin.user.create');
+        return view('user.create');
     }
 
     public function store(Request $request)
@@ -39,6 +39,11 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->role = $request->role;
+
+        if(User::where('email', $user->email)->exists()) {
+            return redirect()->route('user.index')->with('error', 'Email already exists!');
+        }
+
         $user->save();
 
         return redirect()->route('user.index')->with('message', 'User created successfully!');
@@ -48,7 +53,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        return view('admin.user.edit', compact('user'));
+        return view('user.edit', compact('user'));
     }
 
     public function update(Request $request, $id)

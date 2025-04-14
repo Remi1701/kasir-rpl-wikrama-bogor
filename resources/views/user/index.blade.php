@@ -76,7 +76,7 @@
 
 @push('scripts')
 <script>
-    document.querySelectorAll('form[action*="user"]').forEach(form => {
+    document.querySelectorAll('form.delete-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             Swal.fire({

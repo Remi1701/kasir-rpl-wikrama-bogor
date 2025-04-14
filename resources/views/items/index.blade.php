@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produk')
+@section('title', 'Items')
 
 @push('style')
 @endpush
@@ -11,13 +11,13 @@
         <div class="margin-content">
             <div class="container-sm">
                 <div class="section-header">
-                    <h1>Produk</h1>
+                    <h1>Items</h1>
                 </div>
                 <div class="section-body">
                     <div class="table-responsive">
                         <div class="row mb-3">
                             <div class="col-md-12 d-flex justify-content-between align-items-center">
-                                <form action="{{ route('products.index') }}" method="GET" class="d-flex"
+                                <form action="{{ route('items.index') }}" method="GET" class="d-flex"
                                 style="max-width: 100%%;">
                                 <div class="input-group">
                                     <input type="text" name="search" class="form-control rounded"
@@ -27,9 +27,9 @@
                                     </div>
                                 </div>
                             </form>
-                            @if(Auth::user()->role == 'superadmin')
-                            <a href="{{ route('products.create') }}" class="btn btn-success ml-2 p-2">
-                                Create Product
+                            @if(Auth::user()->role == 'admin')
+                            <a href="{{ route('items.create') }}" class="btn btn-success ml-2 p-2">
+                                Create Item
                             </a>
                             @endif
                         </div>
@@ -38,35 +38,35 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
-                                <th>Gambar</th>
-                                <th>Harga</th>
-                                <th>Stok</th>
-                                @if(Auth::user()->role == 'superadmin')
+                                <th>Name</th>
+                                <th>Image</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                @if(Auth::user()->role == 'admin')
                                 <th>Action</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $index => $item)
+                            @foreach ($items as $index => $item)
                             <tr>
-                                <td>{{ $products->firstItem() + $index }}</td>
+                                <td>{{ $items->firstItem() + $index }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td class="text-center"><img src="{{ asset('storage/' . $item->image) }}"
                                     width="100"></td>
                                     <td>{{ 'Rp ' . number_format($item->price, 0, ',', '.') }}</td>
-                                    <td>{{ $item->quantity }}</td>
-                                    @if(Auth::user()->role == 'superadmin')
+                                    <td>{{ $item->stock }}</td>
+                                    @if(Auth::user()->role == 'admin')
                                     <td class="text-center">
                                         <button type="button" class="btn btn-primary edit-stock-btn"
                                         data-id="{{ $item->id }}" data-name="{{ $item->name }}"
-                                        data-quantity="{{ $item->quantity }}" data-toggle="modal"
+                                        data-stock="{{ $item->stock }}" data-toggle="modal"
                                         data-target="#editStockModal">
                                         Edit Stok
                                     </button>
-                                    <a href="{{ route('products.edit', $item->id) }}"
+                                    <a href="{{ route('items.edit', $item->id) }}"
                                         class="btn btn-primary">Edit</a>
-                                        <form action="{{ route('products.destroy', $item->id) }}" method="POST"
+                                        <form action="{{ route('items.destroy', $item->id) }}" method="POST"
                                             class="delete-form" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
@@ -79,7 +79,7 @@
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-end mt-3">
-                            {{ $products->links() }}
+                            {{ $items->links() }}
                         </div>
                     </div>
                 </div>
@@ -103,10 +103,10 @@ aria-hidden="true">
                 </button>
             </div>
             <div class="modal-body">
-                <p id="productName" class="font-weight-bold"></p>
+                <p id="itemName" class="font-weight-bold"></p>
                 <div class="form-group">
-                    <label for="quantityInput">Quantity</label>
-                    <input type="number" min="0" class="form-control" id="quantityInput" name="quantity"
+                    <label for="stockInput">Stock</label>
+                    <input type="number" min="0" class="form-control" id="stockInput" name="stock"
                     required>
                 </div>
             </div>
@@ -146,19 +146,19 @@ aria-hidden="true">
         
         const editStockButtons = document.querySelectorAll('.edit-stock-btn');
         const editStockForm = document.getElementById('editStockForm');
-        const quantityInput = document.getElementById('quantityInput');
-        const productName = document.getElementById('productName');
+        const stockInput = document.getElementById('stockInput');
+        const itemName = document.getElementById('itemName');
         
         editStockButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const id = button.getAttribute('data-id');
                 const name = button.getAttribute('data-name');
-                const quantity = button.getAttribute('data-quantity');
+                const stock = button.getAttribute('data-stock');
                 
-                productName.textContent = `Product: ${name}`;
-                quantityInput.value = quantity;
+                itemName.textContent = `Item: ${name}`;
+                stockInput.value = stock;
                 
-                editStockForm.action = `/products/${id}/update-stock`;
+                editStockForm.action = `/items/${id}/update-stock`;
             });
         });
         

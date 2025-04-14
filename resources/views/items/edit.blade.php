@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Product')
+@section('title', 'Edit Item')
 
 @push('style')
 <style>
@@ -18,7 +18,7 @@
         <div class="margin-content">
             <div class="container-sm">
                 <div class="section-header">
-                    <h1>Edit Product</h1>
+                    <h1>Edit Item</h1>
                 </div>
 
                 @if (session('error'))
@@ -40,24 +40,24 @@
                 <div class="section-body">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('items.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 
                                 <div class="form-group mb-3">
                                     <label for="name">Nama Produk</label>
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="Nama Produk" value="{{ old('name', $product->name) }}" required>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Nama Produk" value="{{ old('name', $item->name) }}" required>
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="price">Harga</label>
-                                    <input type="text" class="form-control" name="price_display" id="price_display" placeholder="Harga Produk" value="{{ old('price', $product->price) }}" required>
-                                    <input type="hidden" name="price" id="price" value="{{ old('price', $product->price) }}">
+                                    <input type="text" class="form-control" name="price_display" id="price_display" placeholder="Harga Produk" value="{{ old('price', $item->price) }}" required>
+                                    <input type="hidden" name="price" id="price" value="{{ old('price', $item->price) }}">
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="quantity">Stok</label>
-                                    <input type="number" class="form-control" name="quantity" id="quantity" placeholder="Jumlah Stok" value="{{ old('quantity', $product->quantity) }}" required>
+                                    <label for="stock">Stock</label>
+                                    <input type="number" class="form-control" name="stock" id="stock" placeholder="Jumlah Stok" value="{{ old('stock', $item->stock) }}" required>
                                 </div>
 
                                 <div class="form-group mb-4">
@@ -71,16 +71,16 @@
                                     </div>
 
                                     <div class="mt-3">
-                                        <img id="imagePreview" src="{{ asset('storage/' . $product->image) }}" alt="Preview Gambar" style="max-width: 200px; max-height: 200px; object-fit: cover;" class="rounded shadow-sm border">
+                                        <img id="imagePreview" src="{{ asset('storage/' . $item->image) }}" alt="Preview Gambar" style="max-width: 200px; max-height: 200px; object-fit: cover;" class="rounded shadow-sm border">
                                     </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('products.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('items.index') }}" class="btn btn-secondary">
                                         Back
                                     </a>
                                     <button type="submit" class="btn btn-success">
-                                        Update Product
+                                        Update Item
                                     </button>
                                 </div>
                             </form>

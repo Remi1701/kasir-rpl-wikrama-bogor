@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Add Member')
+@section('title', 'Add Customer')
 
 @section('content')
 <div class="main-content-table">
@@ -8,7 +8,7 @@
         <div class="margin-content">
             <div class="container-sm">
                 <div class="section-header">
-                    <h1>Add Member</h1>
+                    <h1>Add Customer</h1>
                 </div>
 
                 @if (session('error'))
@@ -30,7 +30,7 @@
                 <div class="section-body">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <form action="{{ route('members.store') }}" method="POST">
+                            <form action="{{ route('customers.store') }}" method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
                                     <label for="name">Name</label>
@@ -39,27 +39,15 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="phone_number">Phone Number</label>
-                                    <input type="text" class="form-control" name="phone_number" id="phone_number" 
-                                           placeholder="Enter Phone Number" value="{{ old('phone_number') }}">
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" name="email" id="email" 
-                                           placeholder="Enter Email" value="{{ old('email') }}">
+                                    <label for="no_hp">Phone Number</label>
+                                    <input type="text" class="form-control" name="no_hp" id="no_hp" 
+                                           placeholder="Enter Phone Number" value="{{ old('no_hp') }}">
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="address">Address</label>
                                     <textarea class="form-control" name="address" id="address" rows="3" 
                                               placeholder="Enter Address">{{ old('address') }}</textarea>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="date_of_birth">Date of Birth</label>
-                                    <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" 
-                                           value="{{ old('date_of_birth') }}">
                                 </div>
 
                                 <div class="form-group mb-4">
@@ -69,11 +57,11 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('members.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('customers.index') }}" class="btn btn-secondary">
                                         Back
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        Add Member
+                                        Add Customer
                                     </button>
                                 </div>
                             </form>

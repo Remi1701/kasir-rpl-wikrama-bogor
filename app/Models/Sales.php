@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-class Items extends Model
+class Sales extends Model
 {
     public $incrementing = false;
 

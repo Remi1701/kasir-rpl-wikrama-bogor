@@ -3,7 +3,7 @@
 use App\Exports\SalesExport;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CustomersController;
@@ -22,15 +22,15 @@ Route::middleware(['authenticate'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     // Item Route
-    Route::resource('items', ItemController::class);
+    Route::resource('items', ItemsController::class);
 
     // Sale Route
-    // Route::get('/sales/{id}/invoice', [SaleController::class, 'showInvoice'])->name('sales.invoice');
-    Route::get('/sales/{id}/invoice', [SaleController::class, 'showInvoice'])->name('sales.invoice');
-    Route::resource('sales', SaleController::class);
+    // Route::get('/sales/{id}/invoice', [SalesController::class, 'showInvoice'])->name('sales.invoice');
+    Route::get('/sales/{id}/invoice', [SalesController::class, 'showInvoice'])->name('sales.invoice');
+    Route::resource('sales', SalesController::class);
 
     // Customer Route
-    Route::resource('customers', CustomerController::class);
+    Route::resource('customers', CustomersController::class);
 
     // Admin Route
     Route::middleware(['admin'])->group(function () {
@@ -43,7 +43,7 @@ Route::middleware(['authenticate'])->group(function () {
         })->name('sales.export');        
 
         // Item Route
-        Route::put('/items/{id}/update-stock', [ItemController::class, 'updateStock'])->name('items.updateStock');
+        Route::put('/items/{id}/update-stock', [ItemsController::class, 'updateStock'])->name('items.updateStock');
 
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -54,8 +54,8 @@ Route::middleware(['authenticate'])->group(function () {
     // User Route
     Route::middleware(['user'])->group(function () {    
         
-        Route::post('/confirm-sale', [SaleController::class, 'confirmationStore'])->name('sales.confirmationStore');
-        // Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+        Route::post('/confirm-sale', [SalesController::class, 'confirmationStore'])->name('sales.confirmationStore');
+        // Route::get('/items', [ItemsController::class, 'index'])->name('items.index');
     });
 });
 
