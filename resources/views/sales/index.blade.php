@@ -54,15 +54,15 @@ use Illuminate\Support\Facades\DB;
                         </thead>
                         <tbody>
                             <tr>
-                                @foreach ($sales as $index => $item)
+                                @foreach ($sales as $index => $items)
                                 <td>{{ $sales->firstItem() + $index }}</td>
-                                <td>{{ $item->customer_name }}</td>
-                                <td>{{ $item->created_at }}</td>
-                                <td>{{ 'Rp ' . number_format($item->total_amount, 0, ',', '.') }}</td>
-                                <td>{{ DB::table('users')->where('id', $item->user_id)->value('name') }}</td>
+                                <td>{{ $items->customer_name }}</td>
+                                <td>{{ $items->created_at }}</td>
+                                <td>{{ 'Rp ' . number_format($items->total_amount, 0, ',', '.') }}</td>
+                                <td>{{ DB::table('users')->where('id', $items->user_id)->value('name') }}</td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-primary detail-transaction-btn" data-toggle="modal" data-target="#transactionDetailModal" data-transaction='{{ json_encode($item) }}'>Lihat</button>
-                                    <a href="{{ route('sales.invoice', $item->id) }}" class="btn btn-primary">Unduh Bukti</a>
+                                    <button type="button" class="btn btn-primary detail-transaction-btn" data-toggle="modal" data-target="#transactionDetailModal" data-transaction='{{ json_encode($items) }}'>Lihat</button>
+                                    <a href="{{ route('sales.invoice', $items->id) }}" class="btn btn-primary">Unduh Bukti</a>
                                 </td>                        
                             </tr>
                             @endforeach
@@ -107,7 +107,7 @@ use Illuminate\Support\Facades\DB;
                                 <th>Subtotal</th>
                             </tr>
                         </thead>
-                        <tbody id="transactionProducts"></tbody>
+                        <tbody id="transactionItems"></tbody>
                     </table>
                 </div>
             </div>
@@ -123,23 +123,23 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             const data = JSON.parse(this.getAttribute('data-transaction'));
 
-            const transactionProducts = document.getElementById('transactionProducts');
-            transactionProducts.innerHTML = '';
+            const transactionItems = document.getElementById('transactionItems');
+            transactionItems.innerHTML = '';
 
-            let products = typeof data.product_data === "string" ? JSON.parse(data.product_data) : data.product_data;
+            let items = typeof data.items_data === "string" ? JSON.parse(data.items_data) : data.items_data;
 
-            let totalProductPrice = 0;
+            let totalItemsPrice = 0;
 
-            products.forEach((product, index) => {
-                const subtotal = product.price * product.stock;
-                totalProductPrice += subtotal;
+            items.forEach((items, index) => {
+                const subtotal = items.price * items.stock;
+                totalItemsPrice += subtotal;
 
-                transactionProducts.innerHTML += `
+                transactionItems.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${product.name}</td>
-                        <td>Rp ${parseInt(product.price || 0).toLocaleString('id-ID')}</td>
-                        <td>${product.stock}</td>
+                        <td>${items.name}</td>
+                        <td>Rp ${parseInt(items.price || 0).toLocaleString('id-ID')}</td>
+                        <td>${items.stock}</td>
                         <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
                     </tr>`;
             });
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('totalAmount').textContent = (data.total_amount || 0).toLocaleString('id-ID');
             document.getElementById('paymentAmount').textContent = (data.payment_amount || 0).toLocaleString('id-ID');
             document.getElementById('changeAmount').textContent = (data.change_amount || 0).toLocaleString('id-ID');
-            document.getElementById('discountAmount').textContent = (totalProductPrice - data.total_amount || 0).toLocaleString('id-ID');
+            document.getElementById('discountAmount').textContent = (totalItemsPrice - data.total_amount || 0).toLocaleString('id-ID');
         });
     });
 });
