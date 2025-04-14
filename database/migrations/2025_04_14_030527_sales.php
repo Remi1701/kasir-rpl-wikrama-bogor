@@ -22,7 +22,8 @@ return new class extends Migration
                 $table->decimal('payment_amount', 12, 2);
                 $table->decimal('change_amount', 12, 2);
                 $table->text('notes')->nullable();
-                $table->timestamps();
+                $table->timestamp('created_at');
+                $table->timestamp('updated_at');
             }
         );
     }

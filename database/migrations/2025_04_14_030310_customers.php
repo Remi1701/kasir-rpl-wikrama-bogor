@@ -18,7 +18,7 @@ return new class extends Migration
                 $table->string('no_hp', 255);
                 $table->integer('points', 11);
                 $table->timestamp('created_at');
-                $table->timestamp('update_at');
+                $table->timestamp('updated_at');
             }
         );
     }

@@ -17,7 +17,7 @@ return new class extends Migration
                 $table->decimal('price', 8,2);
                 $table->integer('stock', 11);
                 $table->timestamp('created_at');
-                $table->timestamp('update_at');
+                $table->timestamp('updated_at');
                 $table->text('image');
             }
         );

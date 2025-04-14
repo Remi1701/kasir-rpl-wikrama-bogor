@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cr;
+use App\Models\Customers;
 use Illuminate\Http\Request;
 
 class CustomersController
@@ -12,7 +12,15 @@ class CustomersController
      */
     public function index()
     {
-        //
+        if ($request->has('search') && $request->search !== null) {
+            $search = strtolower($request->search);
+            $customers = Customers::whereRaw('LOWER(name) LIKE ?', ['%'.$search.'%'])
+                ->orderByRaw('LOWER(name) ASC')
+                ->paginate(10)
+                ->appends($request->only('search'));
+        }
+        $customers = Customers::latest()->paginate(10);
+        return view('customers.index', compact('customers'));
     }
 
     /**
@@ -20,7 +28,7 @@ class CustomersController
      */
     public function create()
     {
-        //
+        return view('customers.create');
     }
 
     /**
@@ -36,7 +44,7 @@ class CustomersController
             'points' => 'nullable|integer|min:0',
         ]);
 
-        Customer::create([
+        Customers::create([
             'name' => $request->name,
             'no_hp' => $request->no_hp,
             'address' => $request->address,
@@ -49,23 +57,23 @@ class CustomersController
     /**
      * Display the specified resource.
      */
-    public function show(cr $cr)
+    public function show(Customers $customer)
     {
-        //
+        return view('customers.show', compact('customer'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(cr $cr)
+    public function edit(Customers $customer)
     {
-        //
+        return view('customers.edit', compact('customer'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, cr $cr)
+    public function update(Request $request, Customers $customer)
 
     {
         $request->validate([
@@ -80,7 +88,7 @@ class CustomersController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(cr $cr)
+    public function destroy(Customers $customer)
     {
         $customer->delete();
 
