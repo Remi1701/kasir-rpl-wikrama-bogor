@@ -12,7 +12,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if (Auth::user()->role != 'admin') {
-            abort(403, 'Tidak Memiliki Akses!');
+            abort(403, 'You Dont Have Access');
         }
 
         if ($request->has('search') && $request->search !== null) {
