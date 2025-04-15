@@ -44,7 +44,7 @@
                                                 <br>Subtotal: Rp {{ number_format($item['price'] * $item['stock'], 0, ',', '.') }}
                                             </li>
                                             <hr>
-                                        @endforeach                                        
+                                        @endforeach
                                         </ul>
                                         <h5 class="mb-3">Total: Rp {{ number_format($totalAmount, 0, ',', '.') }}</h5>
                                         <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
@@ -57,11 +57,11 @@
                                         <h5>Informasi Customers</h5>
                                         <div class="form-group mb-3">
                                             <label for="is_customers">Nama Customers</label>
-                                            <input type="text" class="form-control" name="customers_name" value="{{ $customers['name'] }}" readonly>
+                                            <input type="text" class="form-control" name="customers_name" value="{{ $customers->name }}" readonly>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="total_pay">Jumlah Poin</label>
-                                            <input type="text" class="form-control" id="total_pay" name="total_point" value="{{ $customers['points'] }}" readonly>
+                                            <input type="text" class="form-control" id="total_pay" name="total_point" value="{{ $customers->points }}" readonly>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="use_point" class="d-flex align-items-center">

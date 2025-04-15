@@ -37,12 +37,12 @@ class CustomersController
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp' => 'nullable|string|min:10|max:20',
             'address' => 'nullable|string|max:500',
-            'points' => 'nullable|integer|min:0',
+            'points' => 'nullable|integer|min:0|max:1000000000',
         ]);
 
         if(Customers::where('no_hp', $request->no_hp)->exists()) {
@@ -83,13 +83,20 @@ class CustomersController
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'no_hp' => 'nullable|string|min:10|max:20',
+            'address' => 'nullable|string|max:500',
+            'points' => 'nullable|integer|min:0|max:1000000000',
         ]);
 
-        if(Customers::where('no_hp', $request->no_hp)->exists()) {
+        if ($request->filled('no_hp') && Customers::where('no_hp', $request->no_hp)->where('id', '!=', $customer->id)->exists()) {
             return redirect()->route('customers.index')->with('error', 'Customer with this Phone Number already exists!');
         }
 
-        $customer->update($request->all());
+        $data = $request->only(['name', 'address', 'points']);
+
+        $data['no_hp'] = $request->filled('no_hp') ? $request->no_hp : $customer->no_hp;
+
+        $customer->update($data);
 
         return redirect()->route('customers.index')->with('message', 'Customer updated successfully!');
     }

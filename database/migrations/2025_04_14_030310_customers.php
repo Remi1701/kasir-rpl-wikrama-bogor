@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->string('name', 255);
                 $table->text('address');
                 $table->string('no_hp', 255);
-                $table->integer('points', 11);
+                $table->integer('points', 20);
                 $table->timestamp('created_at');
                 $table->timestamp('updated_at');
             }

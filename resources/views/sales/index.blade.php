@@ -20,32 +20,54 @@ use Illuminate\Support\Facades\DB;
                     <div class="table-responsive">
                         <div class="row mb-3">
                             <div class="col-md-12 d-flex justify-content-between align-items-center">
-                                <form action="{{ route('sales.index') }}" method="GET" class="d-flex"
-                                style="max-width: 100%;">
-                                <div class="input-group">
-                                    <input type="text" name="search" class="form-control rounded"
-                                    placeholder="Search">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary rounded ml-2" type="submit">Search</button>
+                                <form action="{{ route('sales.index') }}" method="GET" class="d-flex" style="max-width: 100%;">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control rounded" placeholder="Search" value="{{ request()->search }}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary rounded ml-2" type="submit">Search</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
-                            @if(Auth::user()->role == 'user')
-                            <a href="{{ route('sales.create') }}" class="btn btn-success ml-2 p-2">
-                                Tambah Sales
-                            </a>
-                            @else 
-                            <a href="{{ route('sales.export') }}" class="btn btn-success ml-2 p-2">
-                                Export Excel
-                            </a>                            
-                            @endif
+                                    <select name="filter_type" class="form-control rounded ml-2" id="filter_type">
+                                        <option value="">Select Filter</option>
+                                        <option value="daily" {{ request()->filter_type == 'daily' ? 'selected' : '' }}>Daily</option>
+                                        <option value="weekly" {{ request()->filter_type == 'weekly' ? 'selected' : '' }}>Weekly</option>
+                                        <option value="monthly" {{ request()->filter_type == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                        <option value="yearly" {{ request()->filter_type == 'yearly' ? 'selected' : '' }}>Yearly</option>
+                                    </select>
+                                    <div class="ml-2" id="date-input">
+                                        @if(request()->filter_type == 'daily')
+                                            <input type="date" name="date" class="form-control rounded" value="{{ request()->date }}">
+                                        @elseif(request()->filter_type == 'weekly')
+                                            <input type="week" name="week" class="form-control rounded" value="{{ request()->week }}">
+                                        @elseif(request()->filter_type == 'monthly')
+                                            <input type="month" name="month" class="form-control rounded" value="{{ request()->month }}">
+                                        @elseif(request()->filter_type == 'yearly')
+                                            <input type="number" name="year" class="form-control rounded" value="{{ request()->year }}" placeholder="Year (e.g., 2023)">
+                                        @endif
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary rounded ml-2" type="submit">Filter</button>
+                                    </div>
+                                </form>
+                                @if(Auth::user()->role == 'user')
+                                <a href="{{ route('sales.create') }}" class="btn btn-success ml-2 p-2">Tambah Sales</a>
+                                @else
+                                <form action="{{ route('sales.exportAll') }}" method="GET">
+                                    <input type="hidden" name="filter_type" value="{{ request('filter_type') }}">
+                                    <input type="hidden" name="date" value="{{ request('date') }}">
+                                    <input type="hidden" name="week" value="{{ request('week') }}">
+                                    <input type="hidden" name="month" value="{{ request('month') }}">
+                                    <input type="hidden" name="year" value="{{ request('year') }}">
+                                    <button class="btn btn-success ml-2 p-2" type="submit">Export Excel</button>
+                                </form>
+                                @endif
+                            </div>
                         </div>
-                    </div>
                     <table class="table table-bordered" style="background-color: #f3f3f3">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Pelanggan</th>
+                                <th>Nomor Invoice</th>
                                 <th>Tanggal Sales</th>
                                 <th>Total Harga</th>
                                 <th>Dibuat Oleh</th>
@@ -56,14 +78,14 @@ use Illuminate\Support\Facades\DB;
                             <tr>
                                 @foreach ($sales as $index => $items)
                                 <td>{{ $sales->firstItem() + $index }}</td>
-                                <td>{{ $items->customer_name }}</td>
+                                <td>{{ $items->invoice_number }}</td>
                                 <td>{{ $items->created_at->format('d-m-Y H:i') }}</td>
                                 <td>{{ 'Rp ' . number_format($items->total_amount, 0, ',', '.') }}</td>
                                 <td>{{ DB::table('users')->where('id', $items->user_id)->value('name') }}</td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-primary detail-transaction-btn" data-toggle="modal" data-target="#transactionDetailModal" data-transaction='{{ json_encode($items) }}'>Lihat</button>
                                     <a href="{{ route('sales.invoice', $items->id) }}" class="btn btn-primary">Unduh Bukti</a>
-                                </td>                        
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -152,6 +174,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('discountAmount').textContent = (totalItemsPrice - data.total_amount || 0).toLocaleString('id-ID');
         });
     });
+});
+document.getElementById('filter_type').addEventListener('change', function() {
+    const selectedFilter = this.value;
+    const dateInputDiv = document.getElementById('date-input');
+    dateInputDiv.innerHTML = '';
+    if (selectedFilter == 'daily') {
+        dateInputDiv.innerHTML = '<input type="date" name="date" class="form-control rounded">';
+    } else if (selectedFilter == 'weekly') {
+        dateInputDiv.innerHTML = '<input type="week" name="week" class="form-control rounded">';
+    } else if (selectedFilter == 'monthly') {
+        dateInputDiv.innerHTML = '<input type="month" name="month" class="form-control rounded">';
+    } else if (selectedFilter == 'yearly') {
+        dateInputDiv.innerHTML = '<input type="number" name="year" class="form-control rounded" placeholder="Year (e.g., 2023)">';
+    }
 });
 </script>
 @endpush

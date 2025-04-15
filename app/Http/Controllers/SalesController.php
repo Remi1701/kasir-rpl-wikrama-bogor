@@ -8,6 +8,8 @@ use App\Models\Customers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SalesExport;
 
 class SalesController
 {
@@ -16,15 +18,55 @@ class SalesController
      */
     public function index(Request $request)
     {
-        if($request->has('search') && $request->search !== null) {
+        $query = Sales::query();
+
+        // Search functionality
+        if ($request->has('search') && $request->search !== null) {
             $search = strtolower($request->search);
-            $sales = Sales::whereRaw('LOWER(invoice_number) LIKE ?', ['%'.$search.'%'])
-                ->paginate(10)
-                ->appends($request->only('search'));
-        } else {
-            $sales = Sales::latest()->paginate(10);
+            $query->whereRaw('LOWER(invoice_number) LIKE ?', ['%' . $search . '%']);
         }
-        
+
+        // Filter by date range (daily, weekly, monthly, yearly)
+        if ($request->has('filter_type')) {
+            $filterType = $request->input('filter_type');
+            $date = now();
+
+            switch ($filterType) {
+                case 'daily':
+                    if ($request->has('date')) {
+                        $query->whereDate('created_at', $request->date);
+                    }
+                    break;
+
+                case 'weekly':
+                    if ($request->has('week')) {
+                        $weekStart = \Carbon\Carbon::parse($request->week)->startOfWeek();
+                        $weekEnd = \Carbon\Carbon::parse($request->week)->endOfWeek();
+                        $query->whereBetween('created_at', [$weekStart, $weekEnd]);
+                    }
+                    break;
+
+                case 'monthly':
+                    if ($request->has('month')) {
+                        $query->whereMonth('created_at', \Carbon\Carbon::parse($request->month)->month)
+                            ->whereYear('created_at', \Carbon\Carbon::parse($request->month)->year);
+                    }
+                    break;
+
+                case 'yearly':
+                    if ($request->has('year')) {
+                        $query->whereYear('created_at', $request->year);
+                    }
+                    break;
+
+                default:
+                    // No filter applied, show all
+                    break;
+            }
+        }
+
+        $sales = $query->latest()->paginate(10)->appends($request->only('search', 'filter_type', 'date', 'week', 'month', 'year'));
+
         return view('sales.index', compact('sales'));
     }
 
@@ -33,7 +75,7 @@ class SalesController
      */
     public function create()
     {
-        $items = Items::all();  
+        $items = Items::all();
         $customers = Customers::all();
         return view('sales.create', compact('items', 'customers'));
     }
@@ -65,20 +107,8 @@ class SalesController
      */
     public function store(Request $request)
     {
-        $rawItemsData = json_decode($request->input('items_data'), true);
-        $itemsData = [];
-        
-        foreach ($rawItemsData as $id => $item) {
-            if (isset($item['include'])) {
-                $itemsData[] = [
-                    'id' => $item['id'],
-                    'name' => $item['name'],
-                    'price' => $item['price'],
-                    'stock' => $item['stock'],
-                ];
-            }
-        }
-        
+
+        $itemsData = json_decode($request->input('items_data'), true);
         $totalPay = $request->input('total_pay');
         $totalAmount = $request->input('total_amount');
         $invoiceNumber = 'INV-' . strtoupper(Str::random(8));
@@ -99,17 +129,13 @@ class SalesController
             return view('sales.customers', compact('customers', 'items', 'totalAmount', 'totalPay'));
         }
 
-        $discount = 0;
-
         if ($request->use_point == 1) {
-            $discount = $request->total_point;
-            $totalAmount -= $discount;
-            Customers::where('id', $customersId)->decrement('points', $discount);
+            $totalAmount = $totalAmount - $request->total_point;
+            Customers::where('id', $customersId)->decrement('points', $request->total_point);
         } else {
             $addPoint = $totalAmount / 750;
             Customers::where('id', $customersId)->increment('points', $addPoint);
         }
-        
 
         Sales::create([
             'id' => Str::uuid(),
@@ -141,27 +167,43 @@ class SalesController
     /**
      * Display the specified resource.
      */
-    public function show(Sales $sales)
+    public function show(Request $request)
     {
-        $itemsData = $sales->items_data;
-        return view('sales.show', compact('sales'));
+        $filterType = $request->input('filter_type');
+        $filterValue = null;
+        switch ($filterType) {
+            case 'daily':
+                $filterValue = $request->input('date');
+                break;
+            case 'weekly':
+                $filterValue = $request->input('week');
+                break;
+            case 'monthly':
+                $filterValue = $request->input('month');
+                break;
+            case 'yearly':
+                $filterValue = $request->input('year');
+                break;
+        }
+        return Excel::download(new SalesExport($filterType, $filterValue), 'sales_export.xlsx');
     }
 
+
     /**
-     * Shows the invoice of a specific sales 
+     * Shows the invoice of a specific sales
      */
     public function showInvoice($id)
     {
         $sales = Sales::where('id', $id)->firstOrFail();
-    
+
         $itemsData = is_string($sales->items_data) ? json_decode($sales->items_data, true) : $sales->items_data;
 
         $totalItemsPrice = array_reduce($itemsData, function ($carry, $item) {
             return $carry + ($item['price'] * $item['stock']);
         }, 0);
-    
+
         $discount = $totalItemsPrice - $sales->total_amount;
-    
+
         return view('sales.invoice-detail', [
             'invoiceNumber' => $sales->invoice_number,
             'customersName' => $sales->customer_name,
@@ -173,29 +215,5 @@ class SalesController
             'discount'      => $discount,
             'createdAt'     => $sales->created_at
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(cr $cr)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, cr $cr)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(cr $cr)
-    {
-        //
     }
 }

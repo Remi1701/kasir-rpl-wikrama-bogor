@@ -25,7 +25,7 @@
                                     <p>{{ now()->format('d F Y, H:i') }}</p>
                                 </div>
                             </div>
-                            
+
                             <div class="table-responsive mt-4">
                                 <table class="table table-bordered">
                                     <thead class="table-light">
@@ -42,15 +42,16 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $item['name'] }}</td>
-                                            <td>Rp {{ number_format($item['price'], 0, ',', '.') }}</td>
-                                            <td>{{ $item['quantity'] }}</td>
-                                            <td>Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</td>
+                                            <td class="text-end">Rp {{ number_format($item['price'], 0, ',', '.') }}</td>
+                                            <td class="text-center">{{ $item['stock'] }}</td>
+                                            <td class="text-end">Rp {{ number_format($item['price'] * $item['stock'], 0, ',', '.') }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
+
                                 </table>
                             </div>
-                            
+
                             <div class="row mt-4">
                                 <div class="col-md-6">
                                     <p><strong>Total Pembayaran:</strong> Rp {{ number_format($totalPay, 0, ',', '.') }}</p>
@@ -64,7 +65,7 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <div class="text-center mt-4">
                                 <a href="{{ route('sales.index') }}" class="btn btn-primary">Kembali ke Penjualan</a>
                                 <button class="btn btn-success" onclick="window.print()">Cetak Invoice</button>

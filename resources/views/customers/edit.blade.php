@@ -36,26 +36,22 @@
 
                                 <div class="form-group mb-3">
                                     <label for="name">Name</label>
-                                    <input type="text" class="form-control" name="name" id="name" 
-                                           placeholder="Enter Name" value="{{ old('name', $customer->name) }}" required>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name" value="{{ old('name', $customer->name) }}" required>
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="no_hp">Phone Number</label>
-                                    <input type="text" class="form-control" name="no_hp" id="no_hp" 
-                                           placeholder="Enter Phone Number" value="{{ old('no_hp', $customer->phone_number) }}">
+                                    <input type="text" class="form-control" name="no_hp" id="no_hp" placeholder="Enter Phone Number" value="{{ old('no_hp', $customer->no_hp) }}" minlength="10">
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="address">Address</label>
-                                    <textarea class="form-control" name="address" id="address" rows="3" 
-                                              placeholder="Enter Address">{{ old('address', $customer->address) }}</textarea>
+                                    <textarea class="form-control" name="address" id="address" rows="3" placeholder="Enter Address">{{ old('address', $customer->address) }}</textarea>
                                 </div>
 
                                 <div class="form-group mb-4">
                                     <label for="points">Points</label>
-                                    <input type="number" class="form-control" name="points" id="points" 
-                                           placeholder="Enter Points" value="{{ old('points', $customer->points) }}" required>
+                                    <input type="number" class="form-control" name="points" id="points" placeholder="Enter Points" value="{{ old('points', $customer->points) }}" required>
                                 </div>
 
                                 <div class="d-flex justify-content-between">

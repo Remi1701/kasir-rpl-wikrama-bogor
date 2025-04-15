@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Items;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;  // Add this line
 
 class ItemsController
 {
@@ -45,14 +46,15 @@ class ItemsController
             'stock' => 'required|integer|max:20000',
             'price' => 'required|numeric|max:100000000000',
         ]);
-        
+
+        $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images/items', 'public');
         }
 
         Items::create([
             'name' => $request->name,
-            'image' => $imagePath ?? null,
+            'image' => $imagePath,
             'stock' => $request->stock,
             'price' => $request->price,
         ]);
@@ -81,6 +83,11 @@ class ItemsController
      */
     public function update(Request $request, Items $item)
     {
+        if ($request->hasFile('image')) {
+            Log::info('Uploaded File: ' . $request->file('image')->getClientOriginalName());
+            Log::info('File MIME Type: ' . $request->file('image')->getMimeType());
+        }
+
         $request->validate([
             'name' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
@@ -98,7 +105,6 @@ class ItemsController
             if ($item->image && Storage::disk('public')->exists($item->image)) {
                 Storage::disk('public')->delete($item->image);
             }
-
             $imagePath = $request->file('image')->store('images/items', 'public');
             $data['image'] = $imagePath;
         }

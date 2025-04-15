@@ -18,9 +18,9 @@ return new class extends Migration
                 $table->uuid('customers_id')->nullable();
                 $table->string('customer_name')->nullable();
                 $table->jsonb('items_data');
-                $table->decimal('total_amount', 12, 2);
-                $table->decimal('payment_amount', 12, 2);
-                $table->decimal('change_amount', 12, 2);
+                $table->decimal('total_amount', 20, 2);
+                $table->decimal('payment_amount', 20, 2);
+                $table->decimal('change_amount', 20, 2);
                 $table->text('notes')->nullable();
                 $table->timestamp('created_at');
                 $table->timestamp('updated_at');

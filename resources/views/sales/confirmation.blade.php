@@ -36,16 +36,16 @@
                                     <div class="col-md-6">
                                         <h5>Produk yang Dibeli</h5>
                                         <ul class="list-group">
-                                        @foreach ($items as $key => $item)
+                                            @foreach ($items as $key => $item)
                                             <li class="list-group-item">
                                                 <strong>{{ $key + 1 . '. ' . $item['name']}}</strong>
                                                 <br>Harga: Rp {{ number_format($item['price'], 0, ',', '.') }}
-                                                <br>Jumlah: {{ $item['quantity'] }}
-                                                <br>Subtotal: Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                                                <br>Jumlah: {{ $filteredStock[$item->id] ?? 0 }}
+                                                <br>Subtotal: Rp {{ number_format($item->price * ($filteredStock[$item->id] ?? 0), 0, ',', '.') }}
                                             </li>
                                             <hr>
                                         @endforeach
-                                                                             
+
                                         </ul>
                                         <h5 class="mb-3">Total: Rp {{ number_format($totalAmount, 0, ',', '.') }}</h5>
                                         <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
@@ -54,10 +54,10 @@
                                                 'id' => $item->id,
                                                 'name' => $item->name,
                                                 'price' => $item->price,
-                                                'quantity' => $filteredStock[$item->id] ?? 0,
+                                                'stock' => $filteredStock[$item->id] ?? 0,
                                                 'subtotal' => $item->price * ($filteredStock[$item->id] ?? 0),
                                             ];
-                                        })) }}">                                        
+                                        })) }}">
                                     </div>
 
                                     <div class="col-md-6">
@@ -76,8 +76,8 @@
                                             <br>
                                             <select class="form-control select2" id="customers_phone" name="customers_id">
                                                 <option value="">Pilih Customers</option>
-                                                @foreach ($customers as $customers)
-                                                    <option value="{{ $customers->id }}">{{ $customers->phone_number }} - {{ $customers->name }}</option>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}">{{ $customer->no_hp }} - {{ $customer->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -85,7 +85,7 @@
                                         <div class="form-group mb-3">
                                             <label for="total_pay">Jumlah Bayar</label>
                                             <input type="text" class="form-control" id="total_pay" value="">
-                                            <input type="hidden" id="total_pay_numeric" name="total_pay">
+                                            <input type="hidden" id="total_pay_numeric" name="total_pay" min="{{ $totalAmount }}" max="99999999999">
                                         </div>
                                     </div>
                                 </div>
@@ -139,6 +139,15 @@
         function formatRupiah(angka) {
             return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
+    });
+    $('form').on('submit', function(e) {
+        let totalPay = $('#total_pay').val().replace(/\D/g, '');
+        if (parseInt(totalPay) > 99999999999) {
+            alert('Jumlah bayar terlalu besar. Maksimum adalah Rp 99.999.999.999');
+            e.preventDefault();
+            return false;
+        }
+        $('#total_pay_numeric').val(totalPay);
     });
 </script>
 @endpush

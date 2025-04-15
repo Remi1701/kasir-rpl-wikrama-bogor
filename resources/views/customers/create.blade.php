@@ -34,25 +34,25 @@
                                 @csrf
                                 <div class="form-group mb-3">
                                     <label for="name">Name</label>
-                                    <input type="text" class="form-control" name="name" id="name" 
+                                    <input type="text" class="form-control" name="name" id="name"
                                            placeholder="Enter Name" value="{{ old('name') }}" required>
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="no_hp">Phone Number</label>
-                                    <input type="text" class="form-control" name="no_hp" id="no_hp" 
-                                           placeholder="Enter Phone Number" value="{{ old('no_hp') }}">
+                                    <input type="text" class="form-control" name="no_hp" id="no_hp"
+                                            placeholder="Enter Phone Number" value="{{ old('no_hp') }}" minlength="10">
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="address">Address</label>
-                                    <textarea class="form-control" name="address" id="address" rows="3" 
+                                    <textarea class="form-control" name="address" id="address" rows="3"
                                               placeholder="Enter Address">{{ old('address') }}</textarea>
                                 </div>
 
                                 <div class="form-group mb-4">
                                     <label for="points">Points</label>
-                                    <input type="number" class="form-control" name="points" id="points" 
+                                    <input type="number" class="form-control" name="points" id="points"
                                            placeholder="Enter Points" value="{{ old('points', 0) }}" required>
                                 </div>
 

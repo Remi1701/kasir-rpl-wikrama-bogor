@@ -4,9 +4,6 @@
         <div class="sidebar-brand">
         <a href="">Cashier APP</a>
         </div>
-        <div class="sidebar-brand sidebar-brand-sm">
-        <a href="">Cashier APP</a>
-        </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
             <li class="{{ Request::is('home') ? 'active' : '' }}">
@@ -14,10 +11,10 @@
             </li>
             {{-- admin --}}
             @if (Auth::user()->role == 'admin')
-            {{-- item master --}}
+            {{-- Item master --}}
             <li class="menu-header">Menu</li>
             <li class="{{ Request::is('items') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('items.index') }}"><i class="fas fa-shopping-bag"></i> <span>Produk</span></a>
+                <a class="nav-link" href="{{ route('items.index') }}"><i class="fas fa-shopping-bag"></i> <span>Item</span></a>
             </li>
             <li class="{{ Request::is('sales') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('sales.index') }}"><i class="fas fa-shopping-cart"></i> <span>Penjualan</span></a>
@@ -35,7 +32,7 @@
             @if (Auth::user()->role == 'user')
             <li class="menu-header">Menu</li>
             <li class="{{ Request::is('items') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('items.index') }}"><i class="fas fa-shopping-bag"></i> <span>Produk</span></a>
+                <a class="nav-link" href="{{ route('items.index') }}"><i class="fas fa-shopping-bag"></i> <span>Item</span></a>
             </li>
             <li class="{{ Request::is('sales') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('sales.index') }}"><i class="fas fa-shopping-cart"></i> <span>Penjualan</span></a>

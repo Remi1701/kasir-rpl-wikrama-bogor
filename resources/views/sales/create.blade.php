@@ -45,7 +45,7 @@
                                                     <p class="card-text text-center">Stok: {{ $item->stock }}</p>
                                                     <div class="d-flex justify-content-center align-items-center">
                                                         <button type="button" class="btn btn-sm btn-outline-secondary decrement" data-id="{{ $item->id }}">-</button>
-                                                        <input type="number" name="stock[{{ $item->id }}]" id="stock-{{ $item->id }}" class="form-control mx-2" value="0" min="0" max="{{ $item->stock }}" data-stock="{{ $item->stock }}" required>                      
+                                                        <input type="number" name="stock[{{ $item->id }}]" id="stock-{{ $item->id }}" class="form-control mx-2" value="0" min="0" max="{{ $item->stock }}" data-stock="{{ $item->stock }}" required>
                                                         <button type="button" class="btn btn-sm btn-outline-secondary increment" data-id="{{ $item->id }}">+</button>
                                                     </div>
                                                 </div>
@@ -78,7 +78,7 @@
                 }
             });
         });
-    
+
         document.querySelectorAll(".decrement").forEach(button => {
             button.addEventListener("click", function () {
                 let itemsId = this.getAttribute("data-id");
